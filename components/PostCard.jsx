@@ -1,3 +1,5 @@
+import moment from "moment"
+
 const PostCard = ({ post }) => {
     return (
         <div>
