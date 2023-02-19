@@ -1,12 +1,20 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import { useContext } from 'react'
 import Link from 'next/link'
 
-const categories = [
-    {name: "React", slug: 'react'},
-    {name: "React 1", slug: 'react1'},
-]
+import { getCategories } from 'services'
+
 
 const Header = () => {
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        getCategories()
+            .then((newCategories) => setCategories(newCategories))
+    }, [])
+
     return (
         <div className='container mx-auto px-10 mb-8'>
             <div className='border-b w-full inline-block border-white py-8'>
@@ -25,7 +33,7 @@ const Header = () => {
                                 {category.name}
                             </span>
                         </Link>
-                    ))}              
+                    ))}
                 </div>
             </div>
         </div>
