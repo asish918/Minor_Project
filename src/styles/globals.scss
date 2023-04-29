@@ -62,3 +62,15 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.head_text {
+  @apply mt-5 text-xl font-extrabold leading-[1.15] text-black sm:text-2xl text-center;
+}
+
+.blue_gradient {
+  @apply bg-gradient-to-r from-blue-600 via-green-300 to-green-500 bg-clip-text text-transparent;
+}
+
+.summary_box {
+  @apply rounded-xl border border-gray-200 bg-white/20 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur p-4;
+}
