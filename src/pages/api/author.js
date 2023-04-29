@@ -15,9 +15,11 @@ export default async function author(req, res) {
   })
 
   const query = gql`
-      mutation createAuthor($name: String!) {
-        createAuthor(data: { name: $name }) {
+      mutation createAuthor($name: String!, $email: String!, $bio: String!) {
+        createAuthor(data: { name: $name, email: $email, bio: $bio }) {
           name
+          email
+          bio
         }
       }
     `
