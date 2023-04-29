@@ -1,48 +1,49 @@
 'use client'
 
-import Loader from "./Loader"
-import { useEffect, useState } from "react";
-import { useLazyGetSummaryQuery } from '../services/article';
+import { useEffect, useRef, useState } from "react";
 import loader from '../src/assets/loader.svg'
+import axios from "axios";
 
 const TextSummarizer = () => {
-    const [article, setArticle] = useState({
-        url: '',
-        summary: '',
-    })
+    const [summary, setSummary] = useState("")
 
-    const [allArticles, setAllArticles] = useState([]);
+    const [isFetching, setIsFetching] = useState(false)
 
-    const [getSummary, { error, isFetching }] = useLazyGetSummaryQuery();
+    let  summarizeUrl = useRef('');
+
+    const options = {
+        method: 'POST',
+        url: 'https://tldrthis.p.rapidapi.com/v1/model/abstractive/summarize-url/',
+        headers: {
+            'content-type': 'application/json',
+            'X-RapidAPI-Key': process.env.NEXT_PUBLIC_X_RapidAPI_Key,
+            'X-RapidAPI-Host': 'tldrthis.p.rapidapi.com'
+        },
+        data: {
+            url: summarizeUrl.current,
+            min_length: 100,
+            max_length: 300,
+            is_detailed: false
+        }
+    };
 
     useEffect(() => {
-        const articlesFromLocalStorage = JSON.parse(
-            localStorage.getItem('articles')
-        );
-
-        if (articlesFromLocalStorage) {
-            setAllArticles(articlesFromLocalStorage);
-        }
-    }, []);
+        summarizeUrl.current = window.location.href;
+    }, [])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsFetching(true);
 
-        setArticle({ ...article, url: "https://www.grammarly.com/blog/articles/" })
+        try {
 
-        const { data } = await getSummary({ articleUrl: article.url });
-
-        if (data?.summary) {
-
-            const newArticle = { ...article, summary: data.summary };
-            const updatedAllArticles = [newArticle, ...allArticles];
-
-            setAllArticles(updatedAllArticles);
-            setArticle(newArticle);
-            console.log(newArticle);
-
-            localStorage.setItem('articles', JSON.stringify(updatedAllArticles));
+            const response = await axios.request(options);
+            console.log(response.data);
+            setSummary(response.data.summary[0]);
+        } catch (e) {
+            console.log(e);
         }
+        setIsFetching(false);
     }
 
     return (
@@ -56,27 +57,22 @@ const TextSummarizer = () => {
 
             <div className='my-10 max-w-full flex justify-center items-center'>
                 {isFetching ? (
-                    <img src={loader} alt="loader" className='w-20 h-20 object-contain' />
-                ) : error ? (
-                    <p className='font-inter font-bold text-black text-center'>Well, that wasn&apos;t supposed to happen...
-                        <br />
-                        <span className='font-satoshi font-normal text-gray-700'>
-                            {error?.data?.error}
-                        </span>
-                    </p>
-                ) : (
-                    article.summary && (
-                        <div className='flex flex-col gap-3'>
-                            <h2 className='font-satoshi font-bold text-gray-600 text-xl'>
-                                Article <span className='blue_gradient'>Summary</span>
-                            </h2>
+                    <img src={loader.src} alt="loader" className='w-20 h-20 object-contain' />
+                )
+                    : (
+                        summary && (
+                            <div className='flex flex-col gap-3'>
+                                <h2 className='font-satoshi font-bold text-gray-600 text-xl'>
+                                    Article <span className='blue_gradient'>Summary</span>
+                                </h2>
 
-                            <div className='summary_box'>
-                                <p className='font-inter font-medium text-sm text-gray-700'>{article.summary}</p>
+                                <div className='summary_box'>
+                                    <p className='font-inter font-medium text-sm text-gray-700'>{summary}</p>
+                                </div>
                             </div>
-                        </div>
+                        )
                     )
-                )}
+                }
             </div>
         </div>
     )
