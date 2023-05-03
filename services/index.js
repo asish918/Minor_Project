@@ -141,6 +141,7 @@ export const getPostDetails = async (slug) => {
                     content {
                         raw
                     }
+                    summary
                 }
         }
     `

@@ -4,46 +4,49 @@ import { useEffect, useRef, useState } from "react";
 import loader from '../src/assets/loader.svg'
 import axios from "axios";
 
-const TextSummarizer = () => {
+const TextSummarizer = ({ postSummary }) => {
     const [summary, setSummary] = useState("")
 
     const [isFetching, setIsFetching] = useState(false)
 
-    let  summarizeUrl = useRef('');
+    // let  summarizeUrl = useRef('');
 
-    const options = {
-        method: 'POST',
-        url: 'https://tldrthis.p.rapidapi.com/v1/model/abstractive/summarize-url/',
-        headers: {
-            'content-type': 'application/json',
-            'X-RapidAPI-Key': process.env.NEXT_PUBLIC_X_RapidAPI_Key,
-            'X-RapidAPI-Host': 'tldrthis.p.rapidapi.com'
-        },
-        data: {
-            url: summarizeUrl.current,
-            min_length: 100,
-            max_length: 300,
-            is_detailed: false
-        }
-    };
+    // const options = {
+    //     method: 'POST',
+    //     url: 'https://tldrthis.p.rapidapi.com/v1/model/abstractive/summarize-url/',
+    //     headers: {
+    //         'content-type': 'application/json',
+    //         'X-RapidAPI-Key': process.env.NEXT_PUBLIC_X_RapidAPI_Key,
+    //         'X-RapidAPI-Host': 'tldrthis.p.rapidapi.com'
+    //     },
+    //     data: {
+    //         url: summarizeUrl.current,
+    //         min_length: 100,
+    //         max_length: 300,
+    //         is_detailed: false
+    //     }
+    // };
 
-    useEffect(() => {
-        summarizeUrl.current = window.location.href;
-    }, [])
+    // useEffect(() => {
+    //     summarizeUrl.current = window.location.href;
+    // }, [])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsFetching(true);
-
+        
         try {
-
-            const response = await axios.request(options);
-            console.log(response.data);
-            setSummary(response.data.summary[0]);
+            
+            // const response = await axios.request(options);
+            setTimeout(() => {
+                setSummary(postSummary)
+                setIsFetching(false);
+            }, 5000)
+            // console.log(response.data);
+            // setSummary(response.data.summary[0]);
         } catch (e) {
             console.log(e);
         }
-        setIsFetching(false);
     }
 
     return (
