@@ -5,7 +5,7 @@ import { PostDetail, Categories, PostWidget, Author, Comments, CommentsForm, Loa
 const PostDetails = ({ post }) => {
     const router = useRouter();
 
-    if(router.isFallback){
+    if (router.isFallback) {
         return <Loader />
     }
 
@@ -15,7 +15,7 @@ const PostDetails = ({ post }) => {
                 <div className="col-span-1 lg:col-span-8">
                     <PostDetail post={post} />
                     <Author author={post.author} />
-                    <TextSummarizer postSummary={post.summary} />
+                    {/* <TextSummarizer postSummary={post.summary} /> */}
                     <CommentsForm slug={post.slug} />
                     <Comments slug={post.slug} />
                 </div>
@@ -45,7 +45,7 @@ export async function getStaticPaths() {
     const posts = await getPosts();
 
     return {
-        paths: posts.map(({node: { slug }}) => ({ params: { slug } })),
+        paths: posts.map(({ node: { slug } }) => ({ params: { slug } })),
         fallback: true
     }
 }
